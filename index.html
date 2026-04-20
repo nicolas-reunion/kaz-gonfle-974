@@ -41,6 +41,22 @@
 
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GW97SND72G"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      
+      // Default consent to 'denied'
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'analytics_storage': 'denied'
+      });
+
+      gtag('js', new Date());
+      gtag('config', 'G-GW97SND72G');
+    </script>
 </head>
 
 <body>
@@ -293,6 +309,22 @@
                         <textarea id="message" name="message" rows="5" placeholder="Dites-nous en plus..."
                             required></textarea>
                     </div>
+
+                    <div class="gdpr-checkboxes">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="consent-contact" name="consent-contact" required>
+                            <label for="consent-contact">J’accepte que mes données soient utilisées pour être recontacté par Kaz Gonflé 974.</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="consent-promo" name="consent-promo">
+                            <label for="consent-promo">J’accepte de recevoir les offres et promotions de Kaz Gonflé 974.</label>
+                        </div>
+                    </div>
+
+                    <div class="gdpr-note">
+                        <i class="fas fa-info-circle"></i> Conforme au RGPD. Vos données sont protégées. Consultez notre <a href="#" id="privacyLink" style="color: var(--primary); text-decoration: underline;">Politique de confidentialité</a>.
+                    </div>
+
                     <button type="submit" class="submit-btn" id="submitBtn">Envoyer la demande</button>
                     <p id="formStatus" style="margin-top: 15px; text-align: center; display: none;"></p>
                 </form>
@@ -370,9 +402,13 @@
     <footer style="padding: 60px 0; text-align: center; border-top: 1px solid rgba(0,0,0,0.05);">
         <div class="container">
             <p>&copy; 2024 KAZ GONFLÉ 974. Tous droits réservés.</p>
-            <div style="margin: 20px 0;">
-                <a href="#terms" id="termsLink" style="font-size: 0.9rem; color: var(--text-secondary);">Conditions
-                    Générales de Location</a>
+            <div style="margin: 20px 0; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <a href="#terms" id="termsLink" style="font-size: 0.9rem; color: var(--text-secondary);">Conditions Générales de Location</a>
+                <a href="#privacy" id="privacyLinkFooter" style="font-size: 0.9rem; color: var(--text-secondary);">Politique de confidentialité</a>
+                <a href="#legal" id="legalLink" style="font-size: 0.9rem; color: var(--text-secondary);">Mentions légales</a>
+            </div>
+            <div id="admin-stats" style="display:none; margin-top: 30px; padding-top: 20px; border-top: 1px dashed rgba(0,0,0,0.05); font-size: 0.8rem; color: #999;">
+                <i class="fas fa-chart-line"></i> Dashboard Admin | Visites totales : <span id="visit-count" style="font-weight: bold; color: var(--primary);">...</span>
             </div>
         </div>
     </footer>
@@ -404,6 +440,64 @@
                 <p>5. <strong>Annulation :</strong> Report possible sans frais si l'annulation intervient 72h avant
                     l'événement.</p>
             </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
+        <div
+            style="background:#fff; padding:40px; border-radius:24px; max-width:600px; max-height:80vh; overflow-y:auto; position:relative;">
+            <span id="closePrivacyModal"
+                style="position:absolute; top:20px; right:20px; font-size:1.5rem; cursor:pointer;">&times;</span>
+            <h3>Politique de Confidentialité</h3>
+            <div style="margin-top:20px; font-size:0.9rem; line-height:1.6; color: var(--text-secondary);">
+                <p><strong>1. Collecte des données :</strong> Nous collectons votre nom, téléphone, email et date d'événement via notre formulaire de contact.</p>
+                <p><strong>2. Utilisation des données :</strong> Ces données sont utilisées exclusivement pour traiter votre demande de devis et vous recontacter. Si vous l'avez accepté, elles peuvent être utilisées pour vous envoyer nos promotions.</p>
+                <p><strong>3. Conservation :</strong> Vos données sont conservées pendant une durée maximale de 3 ans après notre dernier contact.</p>
+                <p><strong>4. Vos droits :</strong> Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. Contactez-nous à nicolas.riou@hotmail.fr pour toute demande.</p>
+                <p><strong>5. Sécurité :</strong> Nous mettons en œuvre les mesures nécessaires pour protéger vos données personnelles contre tout accès non autorisé.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Legal Mentions Modal -->
+    <div id="legalModal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
+        <div
+            style="background:#fff; padding:40px; border-radius:24px; max-width:600px; max-height:80vh; overflow-y:auto; position:relative;">
+            <span id="closeLegalModal"
+                style="position:absolute; top:20px; right:20px; font-size:1.5rem; cursor:pointer;">&times;</span>
+            <h3>Mentions Légales</h3>
+            <div style="margin-top:20px; font-size:0.9rem; line-height:1.6; color: var(--text-secondary);">
+                <p><strong>Éditeur du site :</strong><br>
+                Nom : Kaz Gonflé 974<br>
+                Responsable : Nicolas RIOU<br>
+                Adresse : La Montagne, 97400 Saint-Denis, La Réunion<br>
+                Email : nicolas.riou@hotmail.fr<br>
+                Téléphone : 06 92 38 86 46<br>
+                SIRET : [VOTRE NUMÉRO SIRET]</p>
+
+                <p><strong>Hébergement :</strong><br>
+                Le site est hébergé par GitHub Inc.<br>
+                Adresse : 88 Colin P. Kelly Jr St, San Francisco, CA 94107, États-Unis<br>
+                Site web : https://pages.github.com</p>
+
+                <p><strong>Propriété intellectuelle :</strong><br>
+                L'ensemble de ce site relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle. Tous les droits de reproduction sont réservés.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cookie Banner -->
+    <div id="cookieBanner" class="cookie-banner">
+        <div class="cookie-content">
+            <i class="fas fa-cookie-bite" style="font-size: 1.5rem; color: #ffb74d;"></i>
+            <p>Nous utilisons des cookies pour améliorer votre expérience et analyser le trafic du site. En cliquant sur "Accepter", vous consentez à notre utilisation des cookies.</p>
+        </div>
+        <div class="cookie-buttons">
+            <button id="declineCookies" class="cookie-btn-secondary">Refuser</button>
+            <button id="acceptCookies" class="cookie-btn-primary">Accepter</button>
         </div>
     </div>
 

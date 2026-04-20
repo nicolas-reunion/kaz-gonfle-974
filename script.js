@@ -102,10 +102,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. Modal T&C
+    // 4. Modal T&C et Politique de Confidentialité
     const termsLink = document.getElementById('termsLink');
     const termsModal = document.getElementById('termsModal');
     const closeModal = document.getElementById('closeModal');
+
+    const privacyLinks = [document.getElementById('privacyLink'), document.getElementById('privacyLinkFooter')];
+    const privacyModal = document.getElementById('privacyModal');
+    const closePrivacyModal = document.getElementById('closePrivacyModal');
 
     if (termsLink && termsModal) {
         termsLink.addEventListener('click', (e) => {
@@ -115,6 +119,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         closeModal.addEventListener('click', () => {
             termsModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+    }
+
+    if (privacyLinks && privacyModal) {
+        privacyLinks.forEach(link => {
+            if (link) {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    privacyModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+        });
+        closePrivacyModal.addEventListener('click', () => {
+            privacyModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+    }
+
+    // 5. Modal Mentions Légales
+    const legalLink = document.getElementById('legalLink');
+    const legalModal = document.getElementById('legalModal');
+    const closeLegalModal = document.getElementById('closeLegalModal');
+
+    if (legalLink && legalModal) {
+        legalLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            legalModal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        });
+        closeLegalModal.addEventListener('click', () => {
+            legalModal.style.display = 'none';
             document.body.style.overflow = 'auto';
         });
     }
@@ -136,4 +173,95 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
         observer.observe(el);
     });
+
+    // 6. Gestion du compteur de visites (Exclut l'admin et les doublons)
+    async function handleVisitCounter() {
+        const NAMESPACE = 'kazgonfle974.re';
+        const KEY = 'visits';
+        const today = new Date().toDateString();
+
+        // --- MÉTHODE SECRÈTE D'ACTIVATION ---
+        // On clique 5 fois sur le logo pour devenir admin
+        let logoClickCount = 0;
+        const logo = document.querySelector('.nav-logo');
+        if (logo) {
+            logo.addEventListener('click', () => {
+                logoClickCount++;
+                if (logoClickCount === 5) {
+                    localStorage.setItem('kazAdminMode', 'true');
+                    alert("Mode Admin Activé !");
+                    location.reload();
+                }
+                setTimeout(() => { logoClickCount = 0; }, 3000);
+            });
+        }
+
+        const isAdmin = localStorage.getItem('kazAdminMode') === 'true';
+        const lastCountDate = localStorage.getItem('kazLastCountDate');
+
+        // 2. Incrémenter UNIQUEMENT si pas admin et pas déjà compté aujourd'hui
+        if (!isAdmin && lastCountDate !== today) {
+            try {
+                // Utilisation de fetch sans bloquer le rendu
+                fetch(`https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`).catch(() => {});
+                localStorage.setItem('kazLastCountDate', today);
+            } catch (e) {}
+        }
+
+        // 3. Afficher le compteur si le mode admin est actif
+        if (isAdmin) {
+            const adminStats = document.getElementById('admin-stats');
+            const visitCount = document.getElementById('visit-count');
+            
+            if (adminStats && visitCount) {
+                adminStats.style.display = 'block';
+                try {
+                    const response = await fetch(`https://api.countapi.xyz/get/${NAMESPACE}/${KEY}`);
+                    const data = await response.json();
+                    if (data && data.value) {
+                        visitCount.innerText = data.value;
+                    }
+                } catch (error) {
+                    visitCount.innerText = "Non disponible";
+                }
+            }
+        }
+    }
+
+    // 7. Cookies Consent handling
+    const cookieBanner = document.getElementById('cookieBanner');
+    const acceptBtn = document.getElementById('acceptCookies');
+    const declineBtn = document.getElementById('declineCookies');
+
+    const handleConsent = (status) => {
+        localStorage.setItem('kazCookieConsent', status);
+        cookieBanner.classList.remove('show');
+        
+        if (status === 'accepted') {
+            gtag('consent', 'update', {
+                'analytics_storage': 'granted',
+                'ad_storage': 'granted'
+            });
+        }
+    };
+
+    if (cookieBanner) {
+        const consent = localStorage.getItem('kazCookieConsent');
+        if (!consent) {
+            setTimeout(() => {
+                cookieBanner.classList.add('show');
+            }, 2000);
+        } else if (consent === 'accepted') {
+            // Re-apply consent if already stored
+            gtag('consent', 'update', {
+                'analytics_storage': 'granted',
+                'ad_storage': 'granted'
+            });
+        }
+
+        acceptBtn.addEventListener('click', () => handleConsent('accepted'));
+        declineBtn.addEventListener('click', () => handleConsent('declined'));
+    }
+
+    handleVisitCounter();
 });
